@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 04:51:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/06 07:27:49 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/09 08:15:07 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <string.h>
 # include <stdio.h>
 # include <sys/time.h>
+
+pthread_mutex_t	all;
 
 typedef	struct		s_info
 {
@@ -60,5 +62,6 @@ t_table	*init_table(t_info info);
 t_table	*add_fork(t_table *current, t_info info);
 t_table	*build_table(t_info info);
 void	*action(void *address);
+void	*action_even(void *address);
 int		get_time(long int time_start);
 #endif

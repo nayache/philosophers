@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/29 20:30:52 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/06 07:28:29 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/09 09:13:49 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,23 +52,34 @@ int	start(t_info info, t_table *table)
 	cur = table;
 
 	save_start_time(table);
+	int nb_philos = info.nb_philosophers;
 	while (table != NULL && i < info.nb_philosophers)
 	{
 		if (table->philo != NULL)
 		{
 			if (table->philo->nb % 2 != 0)
-				pthread_create(&(table->philo->th), NULL, action, (void *)table);
+			{
+				if (nb_philos % 2 == 0)
+					pthread_create(&(table->philo->th), NULL, action_even, (void *)table);
+				else
+					pthread_create(&(table->philo->th), NULL, action, (void *)table);
+			}
 			i++;
 		}
 		table = table->next;
 	}
-	usleep(10);
+	//usleep(10);
 	while (table != NULL && i > 0)
 	{
 		if (table->philo != NULL)
 		{
 			if (table->philo->nb % 2 == 0)
-				pthread_create(&(table->philo->th), NULL, action, (void *)table);
+			{
+				if (nb_philos % 2 == 0)
+					pthread_create(&(table->philo->th), NULL, action_even, (void *)table);
+				else
+					pthread_create(&(table->philo->th), NULL, action, (void *)table);
+			}
 			i--;
 		}
 		table = table->prev;
