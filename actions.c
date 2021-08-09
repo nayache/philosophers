@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 09:38:16 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/09 09:17:50 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/09 09:57:27 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,10 @@ void	died(t_table *table)
 	}
 }
 
-void	write_status(t_philo *philo, int *dead, int nb, int start, int status)
+void	write_status(t_table *table, int *dead, int nb, int start, int status)
 {
 	int	time;
+	int	old_time = 0;
 
 	pthread_mutex_lock(&writing);
 	if (*dead == 1)
@@ -50,8 +51,10 @@ void	write_status(t_philo *philo, int *dead, int nb, int start, int status)
 		printf("%dms %d has taken a right fork\n", time, nb);
 	else if (status == 1)
 	{
-		philo->last_eaten = time;
-		printf("%dms \e[1;33m%d is eating\e[0;38m\n", time, nb);
+		old_time = table->philo->last_eaten;
+		table->philo->last_eaten = time;
+		printf("%dms \e[1;33m%d is eating\e[0;38m", time, nb);
+		printf(" %dms \n", time - old_time);
 	}
 	else if (status == 2)
 		printf("%dms %d is sleeping\n", time, nb);
@@ -66,14 +69,14 @@ void	thinking(t_table *table, long int start)
 {
 	//	table->philo->slept = 0;
 	//	table->philo->thought = 1;
-	write_status(table->philo, &(table->dead), table->philo->nb, start, 3);
+	write_status(table, &(table->dead), table->philo->nb, start, 3);
 }
 
 void	sleeping(t_table *table, long int start, int time_sleep)
 {
 	//	table->philo->eaten = 0;
 	//	table->philo->slept = 1;
-	write_status(table->philo, &(table->dead), table->philo->nb, start, 2);
+	write_status(table, &(table->dead), table->philo->nb, start, 2);
 	usleep(1000 * time_sleep);
 }
 
@@ -82,7 +85,7 @@ void	eating(t_table *table, t_philo *philo, long int start, int t_eat)
 	if (table->dead == 1)
 		return;
 	//	philo->last_eaten = get_time(start);
-	write_status(table->philo, &(table->dead), table->philo->nb, start, 1);
+	write_status(table, &(table->dead), table->philo->nb, start, 1);
 	usleep(1000 * t_eat);
 	table->prev->fork = 1;
 	table->next->fork = 1;
@@ -107,8 +110,8 @@ void	take_fork(t_table *table, t_philo *philo, long int start)
 		philo->fork += 2;
 		pthread_mutex_unlock(&(table->next->mutex));
 		pthread_mutex_unlock(&(table->prev->mutex));
-		write_status(table->philo, &(table->dead), table->philo->nb, start, -1);
-		write_status(table->philo, &(table->dead), table->philo->nb, start, 0);
+		write_status(table, &(table->dead), table->philo->nb, start, -1);
+		write_status(table, &(table->dead), table->philo->nb, start, 0);
 	}
 	else
 	{
@@ -127,7 +130,7 @@ void	take_fork_even(t_table *table, t_philo *philo, long int start)
 		table->next->fork = 0;
 		philo->fork += 1;
 		pthread_mutex_unlock(&(table->next->mutex));
-		write_status(table->philo, &(table->dead), table->philo->nb, start, 0);
+		write_status(table, &(table->dead), table->philo->nb, start, 0);
 	}
 	else
 		pthread_mutex_unlock(&(table->next->mutex));
@@ -137,7 +140,7 @@ void	take_fork_even(t_table *table, t_philo *philo, long int start)
 		table->prev->fork = 0;
 		philo->fork += 1;
 		pthread_mutex_unlock(&(table->prev->mutex));
-		write_status(table->philo, &(table->dead), table->philo->nb, start, -1);
+		write_status(table, &(table->dead), table->philo->nb, start, -1);
 	}
 	else
 		pthread_mutex_unlock(&(table->prev->mutex));
@@ -165,7 +168,7 @@ void	*action_even(void *address)
 			return (NULL);
 		if (get_time(table->start) - table->philo->last_eaten > info.time_die)
 		{
-			write_status(table->philo, &(table->dead), table->philo->nb, table->start, 4);
+			write_status(table, &(table->dead), table->philo->nb, table->start, 4);
 			died(table);
 			return (NULL);
 		}
@@ -190,7 +193,7 @@ void	*action(void *address)
 			return (NULL);
 		if (get_time(table->start) - table->philo->last_eaten > info.time_die)
 		{
-			write_status(table->philo, &(table->dead), table->philo->nb, table->start, 4);
+			write_status(table, &(table->dead), table->philo->nb, table->start, 4);
 			died(table);
 			return (NULL);
 		}
