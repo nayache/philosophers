@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/29 20:30:52 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/11 12:50:12 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/11 13:23:20 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	check_args(char **args, int size)
 {
 	int			i;
 	long int	nb;	
-	
+
 	while (--size >= 0)
 	{
 		i = 0;
@@ -70,8 +70,7 @@ int	main(int ac, char **av)
 		table = build_table(info);
 	if (table == NULL)
 		return (-1);
-	dead = 0;
-	pthread_mutex_init(&death, NULL);
+	pthread_mutex_init(&g_death, NULL);
 	launch_threads(info, table);
 	wait_threads(info, table);
 	free_table(table);

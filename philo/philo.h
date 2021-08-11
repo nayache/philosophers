@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 04:51:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/11 12:52:10 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/11 13:20:14 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 # include <stdio.h>
 # include <sys/time.h>
 
-pthread_mutex_t	writing;
-pthread_mutex_t	death;
-int				dead;
+pthread_mutex_t	g_writing;
+pthread_mutex_t	g_death;
+int				g_dead;
 
-typedef	struct		s_info
+typedef struct s_info
 {
 	int				nb_philosophers;
 	int				tte;
@@ -33,7 +33,7 @@ typedef	struct		s_info
 	int				max_eaten;
 }					t_info;
 
-typedef struct		s_philo
+typedef struct s_philo
 {
 	pthread_t		th;
 	int				nb;
@@ -42,7 +42,7 @@ typedef struct		s_philo
 	int				last_eaten;
 }					t_philo;
 
-typedef	struct		s_table
+typedef struct s_table
 {
 	struct s_philo	*philo;
 	struct s_info	info;
@@ -52,7 +52,6 @@ typedef	struct		s_table
 	long int		start;
 	pthread_mutex_t	mutex;
 }					t_table;
-
 
 t_philo	*init_philo(int	nb);
 t_table	*init_table(t_info info);

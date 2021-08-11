@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 09:38:16 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/11 12:06:54 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/11 13:26:13 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 void	actions(t_table *table, t_philo *philo, long int start, int t_eat)
 {
 	if (check_death_on_the_table() == 1)
-		return;
+		return ;
 	if (time_limit_elapsed(table->info.ttd, philo->last_eaten, start) == 1)
 	{
 		print_status(table, philo->nb, start, 4);
-		return;
+		return ;
 	}
 	print_status(table, table->philo->nb, start, 1);
 	usleep(1000 * t_eat);
@@ -40,7 +40,7 @@ void	actions(t_table *table, t_philo *philo, long int start, int t_eat)
 void	take_forks(t_table *table, t_philo *philo, long int start)
 {
 	if (check_death_on_the_table() == 1)
-		return;
+		return ;
 	lock_forks(philo->nb, &(table->next->mutex), &(table->prev->mutex));
 	if (table->next->fork == 1 && table->prev->fork == 1)
 	{
@@ -48,7 +48,7 @@ void	take_forks(t_table *table, t_philo *philo, long int start)
 		table->prev->fork = 0;
 		unlock_forks(philo->nb, &(table->next->mutex), &(table->prev->mutex));
 		philo->fork += 2;
-		print_status(table, table->philo->nb, start, -1);
+		print_status(table, table->philo->nb, start, 0);
 		print_status(table, table->philo->nb, start, 0);
 	}
 	else
@@ -58,7 +58,7 @@ void	take_forks(t_table *table, t_philo *philo, long int start)
 void	take_fork(t_table *table, t_philo *philo, long int start)
 {
 	if (check_death_on_the_table() == 1 || philo->fork == 2)
-		return;
+		return ;
 	pthread_mutex_lock(&(table->next->mutex));
 	if (table->next->fork == 1)
 	{
@@ -75,7 +75,7 @@ void	take_fork(t_table *table, t_philo *philo, long int start)
 		table->prev->fork = 0;
 		philo->fork += 1;
 		pthread_mutex_unlock(&(table->prev->mutex));
-		print_status(table, table->philo->nb, start, -1);
+		print_status(table, table->philo->nb, start, 0);
 	}
 	else
 		pthread_mutex_unlock(&(table->prev->mutex));
@@ -83,9 +83,9 @@ void	take_fork(t_table *table, t_philo *philo, long int start)
 
 void	*diner(void *address)
 {
-	t_table			*table;
-	t_philo			*philo;
-	t_info			info;
+	t_table	*table;
+	t_philo	*philo;
+	t_info	info;
 
 	table = (t_table *)address;
 	philo = table->philo;

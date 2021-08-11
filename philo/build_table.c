@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   build_table.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 04:53:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/11 12:10:26 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/11 13:22:29 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ t_table	*add_fork(t_table *current, t_info info)
 
 t_table	*build_single_table(t_info info)
 {
-	t_table *head;
-	t_table *new;
-	t_table *fork;
+	t_table	*head;
+	t_table	*new;
+	t_table	*fork;
 
 	head = init_table(info);
 	if (head == NULL)
@@ -86,8 +86,8 @@ t_table	*build_table(t_info info)
 	int		i;
 
 	head = NULL;
-	i = 0;
-	while (i < info.nb_philosophers)
+	i = -1;
+	while (++i < info.nb_philosophers)
 	{
 		current = init_table(info);
 		if (current == NULL)
@@ -101,7 +101,6 @@ t_table	*build_table(t_info info)
 			current->prev = tmp;
 		}
 		tmp = add_fork(current, info);
-		i++;
 	}
 	tmp->next = head;
 	head->prev = tmp;

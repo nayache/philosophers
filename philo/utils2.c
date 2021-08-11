@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils3.c                                           :+:      :+:    :+:   */
+/*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 11:55:20 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/11 12:09:15 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/11 13:24:44 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,19 @@ void	unlock_forks(int nb, void *next, void *prev)
 	}
 }
 
-int		check_death_on_the_table(void)
+int	check_death_on_the_table(void)
 {
-	pthread_mutex_lock(&death);
-	if (dead == 1)
+	pthread_mutex_lock(&g_death);
+	if (g_dead == 1)
 	{
-		pthread_mutex_unlock(&death);
+		pthread_mutex_unlock(&g_death);
 		return (1);
 	}
-	pthread_mutex_unlock(&death);
+	pthread_mutex_unlock(&g_death);
 	return (0);
 }
 
-int		get_time(long int start)
+int	get_time(long int start)
 {
 	struct timeval	curr_time;
 
@@ -62,7 +62,7 @@ int		get_time(long int start)
 	return (curr_time.tv_sec * 1000 + curr_time.tv_usec / 1000);
 }
 
-int		time_limit_elapsed(int time_to_die, int time_last_eaten, int start)
+int	time_limit_elapsed(int time_to_die, int time_last_eaten, int start)
 {
 	if (get_time(start) - time_last_eaten >= time_to_die)
 		return (1);
