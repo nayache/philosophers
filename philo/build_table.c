@@ -6,28 +6,11 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 04:53:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/05 07:22:25 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/11 12:10:26 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	free_table(t_table *head)
-{
-	t_table *tmp;
-
-	if (head->prev != NULL)
-		head->prev->next = NULL;
-	while (head != NULL)
-	{
-		tmp = head;
-		head = head->next;
-		if (tmp->philo != NULL)
-			free(tmp->philo);
-		free(tmp);
-		tmp = NULL;
-	}
-}
 
 t_philo	*init_philo(int	nb)
 {
@@ -38,9 +21,6 @@ t_philo	*init_philo(int	nb)
 		return (NULL);
 	new->nb = nb;
 	new->fork = 0;
-	new->eaten = 0;
-	new->slept = 0;
-	new->thought = 1;
 	new->nb_eaten = 0;
 	new->last_eaten = 0;
 	return (new);
@@ -56,7 +36,6 @@ t_table	*init_table(t_info info)
 	new->philo = NULL;
 	new->start = 0;
 	new->fork = -1;
-	new->dead = 0;
 	new->info = info;
 	new->prev = NULL;
 	new->next = NULL;
@@ -76,6 +55,27 @@ t_table	*add_fork(t_table *current, t_info info)
 	new->next = NULL;
 	current->next = new;
 	return (new);
+}
+
+t_table	*build_single_table(t_info info)
+{
+	t_table *head;
+	t_table *new;
+	t_table *fork;
+
+	head = init_table(info);
+	if (head == NULL)
+		return (NULL);
+	head->philo = init_philo(1);
+	if (head->philo == NULL)
+		return (NULL);
+	fork = add_fork(head, info);
+	new = init_table(info);
+	pthread_mutex_init(&(new->mutex), NULL);
+	new->next = head;
+	head->prev = new;
+	fork->next = new;
+	return (head);
 }
 
 t_table	*build_table(t_info info)
