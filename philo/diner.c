@@ -6,11 +6,24 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 09:38:16 by nayache           #+#    #+#             */
-/*   Updated: 2021/08/11 13:26:13 by nayache          ###   ########.fr       */
+/*   Updated: 2021/08/11 14:27:22 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	dead_on_action(t_table *table, long int start, int status)
+{
+	int	time;
+
+	if (status == 1)
+		time = table->info.ttd;
+	else
+		time = table->info.ttd - table->info.tte;
+	print_status(table, table->philo->nb, start, status);
+	usleep(1000 * time);
+	print_status(table, table->philo->nb, start, 4);
+}
 
 void	actions(t_table *table, t_philo *philo, long int start, int t_eat)
 {
@@ -21,6 +34,8 @@ void	actions(t_table *table, t_philo *philo, long int start, int t_eat)
 		print_status(table, philo->nb, start, 4);
 		return ;
 	}
+	if (table->info.tte > table->info.ttd)
+		return (dead_on_action(table, start, 1));
 	print_status(table, table->philo->nb, start, 1);
 	usleep(1000 * t_eat);
 	lock_forks(philo->nb, &(table->next->mutex), &(table->prev->mutex));
@@ -31,6 +46,8 @@ void	actions(t_table *table, t_philo *philo, long int start, int t_eat)
 	philo->nb_eaten += 1;
 	if (table->info.max_eaten != philo->nb_eaten)
 	{
+		if (table->info.tte + table->info.tts >= table->info.ttd)
+			return (dead_on_action(table, start, 2));
 		print_status(table, table->philo->nb, start, 2);
 		usleep(1000 * table->info.tts);
 		print_status(table, table->philo->nb, start, 3);
